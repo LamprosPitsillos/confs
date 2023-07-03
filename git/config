@@ -1,0 +1,19 @@
+[user]
+    name = Lampros
+	email = hauahx@gmail.com
+[credential]
+	helper = store
+[push]
+	default = simple
+[merge]
+	conflictstyle = diff3
+	; tool = nvim -d
+[mergetool]
+	prompt = false
+[alias]
+    # Thanks r00k, this creates a pretty graph view of the log
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+[core]
+  editor = nvim
+	excludesFile = ~/.gitignore
+	autocrlf = input

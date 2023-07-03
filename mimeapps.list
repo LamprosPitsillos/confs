@@ -1,0 +1,38 @@
+[Default Applications]
+application/pdf=org.pwmt.zathura.desktop
+image/jpeg=sxiv.desktop
+image/svg+xml=sxiv.desktop
+text/html=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/http=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/https=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/about=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/unknown=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/mailto=userapp-Thunderbird-6I38T1.desktop
+message/rfc822=userapp-Thunderbird-6I38T1.desktop
+x-scheme-handler/mid=userapp-Thunderbird-6I38T1.desktop
+x-scheme-handler/feed=userapp-Thunderbird-NNTZT1.desktop
+application/rss+xml=userapp-Thunderbird-NNTZT1.desktop
+application/x-extension-rss=userapp-Thunderbird-NNTZT1.desktop
+x-scheme-handler/webcal=userapp-Thunderbird-R3O1T1.desktop
+text/calendar=userapp-Thunderbird-R3O1T1.desktop
+application/x-extension-ics=userapp-Thunderbird-R3O1T1.desktop
+x-scheme-handler/webcals=userapp-Thunderbird-R3O1T1.desktop
+x-scheme-handler/eclipse+command x-scheme-handler/eclipse+mpc=_home_inferno_downs_eclipse_.desktop
+application/lrf=calibre-lrfviewer.desktop
+video/mp4=mpv.desktop
+x-scheme-handler/viber=viber.desktop
+x-scheme-handler/postman=Postman.desktop
+
+[Removed Associations]
+
+[Added Associations]
+application/x-subrip=userapp-neovide-WACPS1.desktop;
+x-scheme-handler/mailto=userapp-Thunderbird-6I38T1.desktop;
+x-scheme-handler/mid=userapp-Thunderbird-6I38T1.desktop;
+x-scheme-handler/feed=userapp-Thunderbird-NNTZT1.desktop;
+application/rss+xml=userapp-Thunderbird-NNTZT1.desktop;
+application/x-extension-rss=userapp-Thunderbird-NNTZT1.desktop;
+x-scheme-handler/webcal=userapp-Thunderbird-R3O1T1.desktop;
+x-scheme-handler/webcals=userapp-Thunderbird-R3O1T1.desktop;
+text/x-log=nvim.desktop;
+video/mp4=mpv.desktop;

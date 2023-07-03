@@ -1,0 +1,43 @@
+#!/bin/zsh
+
+rotate() {
+	degree="$1"
+	tr '\n' '\0' | xargs -0 realpath | sort | uniq | while read file; do
+	case "$(file -b -i "$file")" in
+		image/jpeg*) jpegtran -rotate "$degree" -copy all -outfile "$file" "$file" ;;
+		*)           mogrify  -rotate "$degree" "$file" ;;
+	esac
+done
+}
+
+case "$1" in
+	"C-x")  #Copy name to clipboard
+		xsel --input | tr '\n' ' ' | xsel --input --clipboard ;;
+	"C-n")  #Copy name to clipboard
+		read file; realpath ${file} | xsel;;
+	"C-c")  #Copy image to clipboard
+		while read file; do xsel --clipboard "$file"; done ;;
+	"C-g")  #Open in GIMP
+		tr '\n' '\0' | xargs -0 gimp & ;;
+	"C-comma")  rotate 270 ;;
+	"C-period")  rotate  90 ;;
+	"C-slash")  rotate 180 ;;
+	"d")  #Delete selected files
+		while read file;do rm "$file";done ;;
+	"w")  #Change wallpaper
+		while read file;do feh --bg-fill --no-fehbg "$file"
+		echo "feh --bg-fill --no-fehbg $(realpath $file)" > $SCRIPTS/wallpaper/wallpaper.sh ;done ;;
+	"W")  #Change wallpaper and lockscreen wallpaper
+		while read file;do feh --bg-fill --no-fehbg "$file";
+		echo "feh --bg-fill --no-fehbg $(realpath $file)" > $SCRIPTS/wallpaper/wallpaper.sh ;
+		convert "$file" -filter Gaussian -blur 0x8 $SCRIPTS/wallpaper/blurred.jpg ;done ;;
+	"r")  #Rename file
+		read file; $SCRIPTS/sxiv/rename "${file}";;
+	"s")  #Send/Drag file
+		read file; dragon "${file}";;
+ 	"h")  #Help notification
+		rg '"\S+"\)\s' --no-line-number --no-filename $0 |\
+			sed 's#^\s\+\(".*"\)#<b>\1</b>#' | tr -d ';#'|\
+			column -t -s\) -o ' : '|\
+			xargs --delimiter=\# -r -I '{}' notify-send "SXIV" "{}" -i NONE ;;
+				esac

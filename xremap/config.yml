@@ -1,0 +1,25 @@
+modmap:
+  - name: caps_to_esc
+    remap:
+      CapsLock:
+        alone: Esc
+        held: LeftCTRL
+keymap:
+  - name: nums_to_homerow
+    remap:
+      ALT_R-A: '1'
+      ALT_R-S: '2'
+      ALT_R-D: '3'
+      ALT_R-F: '4'
+      ALT_R-G: '5'
+      ALT_R-H: '6'
+      ALT_R-J: '7'
+      ALT_R-K: '8'
+      ALT_R-L: '9'
+      ALT_R-KEY_SEMICOLON: KEY_MINUS
+      ALT_R-KEY_APOSTROPHE: KEY_EQUAL
+      ALT_R-I: KEY_LEFTBRACE
+      ALT_R-O: KEY_RIGHTBRACE
+      ALT_R-P: KEY_BACKSLASH
+      ALT_R-ALT_L: KEY_BACKSPACE
+      ALT_R-KEY_SPACE: KEY_ENTER

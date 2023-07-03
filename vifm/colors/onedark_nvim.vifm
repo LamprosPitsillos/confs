@@ -1,0 +1,26 @@
+highlight clear
+highlight Win guifg=#a7aab0 guibg=#232326 gui=none
+highlight OtherWin guifg=#5a5b5e guibg=-1 gui=none
+highlight TopLine guifg=#5a5b5e guibg=#2c2d31 gui=none
+highlight TopLineSel guifg=#a7aab0 guibg=#35363b gui=none
+highlight TabLine guifg=#a7aab0 guibg=#2c2d31 gui=none
+highlight TabLineSel guifg=#232326 guibg=#a7aab0 gui=none
+highlight JobLine guifg=#a7aab0 guibg=#35363b gui=none
+highlight StatusLine guifg=#a7aab0 guibg=#35363b gui=none
+highlight Border guifg=#2c2d31 guibg=#000080 gui=none
+highlight CurrLine ctermfg=0 ctermbg=12 cterm=reverse
+highlight OtherLine ctermfg=0 ctermbg=4 cterm=reverse
+highlight LineNr guifg=#5a5b5e guibg=-1 gui=none
+highlight Selected guifg=#000000 guibg=#37383d gui=none
+highlight CmpMismatch guifg=#000000 guibg=#1a2a37 gui=none
+highlight SuggestBox guifg=#a7aab0 guibg=#232326 gui=none
+highlight WildMenu guifg=#a7aab0 guibg=#2c2d31 gui=none
+highlight CmdLine guifg=#a7aab0 guibg=#232326 gui=none
+highlight ErrorMsg guifg=#de5d68 guibg=#ff0000 gui=bold
+highlight Directory guifg=#bb70d2 guibg=-1 gui=none
+highlight Executable guifg=#51a8b3 guibg=-1 gui=none
+highlight Socket guifg=#dbb671 guibg=-1 gui=none
+highlight Device guifg=#818387 guibg=-1 gui=none
+highlight Fifo guifg=#8fb573 guibg=-1 gui=none
+highlight Link guifg=#c49060 guibg=-1 gui=none
+highlight BrokenLink guifg=#de5d68 guibg=#ffffe0 gui=none
