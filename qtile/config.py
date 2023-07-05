@@ -15,7 +15,6 @@ from libqtile.config import (
     Click,
     Drag,
     DropDown,
-    EzKey,
     Group,
     Key,
     KeyChord,
@@ -47,24 +46,24 @@ wallpaper = "/home/inferno/pics/wallpapers/hellish_depression_orange.jpg"
 #     qtile.restart()
 #
 
-@hook.subscribe.client_new
-def _swallow(window):
-    pid = window.window.get_net_wm_pid()
-    ppid = psutil.Process(pid).ppid()
-    cpids = {
-        c.window.get_net_wm_pid(): wid for wid, c in window.qtile.windows_map.items()
-    }
-    for i in range(5):
-        if not ppid:
-            return
-        if ppid in cpids:
-            parent = window.qtile.windows_map.get(cpids[ppid])
-            if parent.window.get_wm_class()[1] != "kitty":
-                return
-            parent.minimized = True
-            window.parent = parent
-            return
-        ppid = psutil.Process(ppid).ppid()
+# @hook.subscribe.client_new
+# def _swallow(window):
+#     pid = window.window.get_net_wm_pid()
+#     ppid = psutil.Process(pid).ppid()
+#     cpids = {
+#         c.window.get_net_wm_pid(): wid for wid, c in window.qtile.windows_map.items()
+#     }
+#     for i in range(5):
+#         if not ppid:
+#             return
+#         if ppid in cpids:
+#             parent = window.qtile.windows_map.get(cpids[ppid])
+#             if parent.window.get_wm_class()[1] != "kitty":
+#                 return
+#             parent.minimized = True
+#             window.parent = parent
+#             return
+#         ppid = psutil.Process(ppid).ppid()
 
 
 @hook.subscribe.client_killed
@@ -93,7 +92,8 @@ def window_to_slice(qtile):
 
 def get_monitors():
     xr = (
-        subprocess.check_output('xrandr --query | grep " connected"', shell=True)
+        subprocess.check_output(
+            'xrandr --query | grep " connected"', shell=True)
         .decode()
         .split("\n")
     )
@@ -108,94 +108,94 @@ terminal = "kitty"
 
 keys = [
     # Switch between windows
-    EzKey("M-f", lazy.hide_show_bar("all"), desc="Hide Bar"),
-    EzKey("M-h", lazy.layout.left(), desc="Move focus to left"),
-    EzKey("M-s", window_to_slice, desc="Move to slice"),
-    EzKey("M-l", lazy.layout.right(), desc="Move focus to right"),
-    EzKey("M-j", lazy.layout.down(), desc="Move focus down"),
-    EzKey("M-k", lazy.layout.up(), desc="Move focus up"),
-    EzKey("M-c", lazy.group.next_window(), desc="Move window focus to other window"),
+    Key([mod], "f", lazy.hide_show_bar("all"), desc="Hide Bar"),
+    Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
+    Key([mod], "s", window_to_slice, desc="Move to slice"),
+    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
+    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
+    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
+    Key([mod], "c", lazy.group.next_window(),
+        desc="Move window focus to other window"),
     # App Launcher
     KeyChord(
         [mod],
         "o",
         [
-            EzKey("c", lazy.spawn("qalculate-gtk"), desc="Launch vifm"),
-            EzKey(
+            Key([], "c", lazy.spawn("qalculate-gtk"), desc="Launch vifm"),
+            Key([],
                 "i",
                 lazy.spawn(f"qtile run-cmd -f kitty -e {script} notetaking"),
                 desc="Note taking",
-            ),
-            EzKey("v", lazy.spawn(f"{terminal} -e vifm"), desc="Launch vifm"),
-            EzKey(
+                ),
+            Key([], "v", lazy.spawn(
+                f"{terminal} -e vifm"), desc="Launch vifm"),
+            Key([],
                 "q",
                 lazy.spawn(script + "qute_search.sh"),
                 desc="Launch qutebrowser",
-            ),
-            EzKey("n", lazy.spawn("kitty -e nvim"), desc="Launch Nvim"),
-            # EzKey("n", lazy.spawn("neovide"), desc="Launch Nvim"),
-            EzKey(
+                ),
+            Key([], "n", lazy.spawn("kitty -e nvim"), desc="Launch Nvim"),
+            Key([],
                 "s",
                 lazy.spawn(
                     "qtile run-cmd -f zathura '/home/inferno/UoC/8ο Εξαμηνο/Scedule/8ο Εξαμηνο.pdf'"
-                ),
+            ),
             ),
         ],
     ),
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
-    EzKey("M-S-h", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    EzKey("M-a", lazy.to_screen(0), desc="Keyboard focus to monitor 1"),
-    EzKey("M-d", lazy.to_screen(1), desc="Keyboard focus to monitor 2"),
+    Key([mod, "shift"], "h", lazy.layout.shuffle_left(),
+        desc="Move window to the left"),
+    Key([mod], "a", lazy.to_screen(0), desc="Keyboard focus to monitor 1"),
+    Key([mod], "d", lazy.to_screen(1), desc="Keyboard focus to monitor 2"),
     # Switch focus of monitors
-    EzKey("M-s", lazy.next_screen(), desc="Move focus to next monitor"),
+    Key([mod], "s", lazy.next_screen(), desc="Move focus to next monitor"),
     # Key([mod], "comma",
     #     lazy.prev_screen(),
     #     desc='Move focus to prev monitor'
     #     ),
-    EzKey(
-        "M-S-l",
+    Key([mod, "shift"], "l",
         lazy.layout.shuffle_right(),
         desc="Move window to the right",
-    ),
-    EzKey("M-S-j", lazy.layout.shuffle_down(), desc="Move window down"),
-    EzKey("M-S-k", lazy.layout.shuffle_up(), desc="Move window up"),
+        ),
+    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
+    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
     # Grow windows. If current window is on the edge of screen and direction
     # will be to screen edge - window would shrink.
-    EzKey("M-C-h", lazy.layout.grow_left(), desc="Grow window to the left"),
-    EzKey("M-C-l", lazy.layout.grow_right(), desc="Grow window to the right"),
-    EzKey("M-C-j", lazy.layout.grow_down(), desc="Grow window down"),
-    EzKey("M-C-k", lazy.layout.grow_up(), desc="Grow window up"),
-    EzKey("M-n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key([mod, "control"], "h", lazy.layout.grow_left(),
+        desc="Grow window to the left"),
+    Key([mod, "control"], "l", lazy.layout.grow_right(),
+        desc="Grow window to the right"),
+    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
+    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
+    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
     # multiple stack panes
-    EzKey(
-        "M-S-<Return>",
+    Key([mod, "shift"], "Return",
         lazy.layout.toggle_split(),
         desc="Toggle between split and unsplit sides of stack",
-    ),
-    EzKey(
-        "M-S-t",
+        ),
+    Key([mod, "shift"], "t",
         lazy.window.toggle_floating(),
         desc="Toggle between floating and tiled of window",
-    ),
-    EzKey("M-<Return>", lazy.spawn(terminal), desc="Launch terminal"),
-    EzKey("M-<Tab>", lazy.next_layout(), desc="Toggle between layouts"),
-    EzKey("M-w", lazy.window.kill(), desc="Kill focused window"),
-    EzKey("M-S-C-r", lazy.restart(), desc="Restart Qtile"),
-    EzKey("M-C-r", lazy.reload_config(), desc="Restart Qtile"),
-    EzKey("M-C-q", lazy.shutdown(), desc="Shutdown Qtile"),
-    EzKey("M-r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+        ),
+    Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
+    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
+    Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
+    Key([mod, "shift", "control"], "r", lazy.restart(), desc="Restart Qtile"),
+    Key([mod, "control"], "r", lazy.reload_config(), desc="Restart Qtile"),
+    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     # Custom
-    EzKey("<Print>", lazy.spawn(script + "print_screen"), desc="Take a Screenshot"),
-    EzKey(
-        "S-<Print>",
+    Key([], "Print", lazy.spawn(script + "print_screen"), desc="Take a Screenshot"),
+    Key(["shift"], "Print",
         lazy.spawn(script + "print_window"),
         desc="Take a Screenshot of a window",
-    ),
-    EzKey("M-<Print>", lazy.spawn("peek"), desc="Record portion of screen"),
+        ),
+    Key([mod], "Print", lazy.spawn("peek"), desc="Record portion of screen"),
     Key(
         [],
         "XF86AudioPlay",
@@ -298,7 +298,8 @@ for i, group in enumerate(groups[:4], start=1):
                 [mod, "shift"],
                 str(i),
                 lazy.window.togroup(group.name),
-                desc="Switch to & move focused window to group {}".format(group.name),
+                desc="Switch to & move focused window to group {}".format(
+                    group.name),
             ),
         ]
     )
