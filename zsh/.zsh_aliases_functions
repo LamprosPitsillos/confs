@@ -1,0 +1,97 @@
+
+# CUSTOM_ALIASES
+
+#--------------------------------------------------------------------#
+#                               Shell                                #
+#--------------------------------------------------------------------#
+alias pomodoro="porsmo"
+alias btd="bluetoothctl power off"
+alias btc='bluetoothctl power on && bluetoothctl connect $(bluetoothctl devices | fzf --tac --reverse --height=30% --border | cut -d " " -f2)'
+alias -s pdf="zathura"
+alias -s ods="libreoffice"
+alias -s {png,jpg,gif}="sxiv"
+alias -s {webm,mkv,mp4,mov}="mpv"
+alias -s {mp3,flac,wav}="mpv"
+alias ip='ip -color=auto'
+alias Rcp="rsync --human-readable --progress --whole-file --archive"
+alias conf="nvim /home/inferno/.config/zsh/.zsh_aliases_functions"
+alias gtd="cd ~/downs && ls"
+alias gtp="cd ~/pics/"
+alias gtdo="cd ~/docs/"
+alias gtu="cd ~/UoC/4ο\ Εξαμηνο"
+alias hs='echo -n $(history 1 | fzf --tac | sed -e "s/^.[0-9]\+  //") | xsel --clipboard --input'
+alias ls='ls --sort time --color=auto -h'
+alias la='exa --icons --long --accessed --all'
+alias lar='exa --icons --long --accessed --all --tree --level '
+alias tree='exa --icons --tree --accessed'
+alias nconf="nvim $HOME/.config/nvim/init.lua"
+alias nv="nvim"
+alias q="exit"
+alias fm="vifm ."
+alias se="sudoedit"
+function sshu() {
+    local server_name="$1"
+    if [ -z "$1" ]; then
+        server_name="naxos"
+    fi
+    ssh -Y -t csd4438@$server_name.csd.uoc.gr "zsh && clear"}
+function cdl() {cd $1 && exa }
+function uzip() {unzip "${1}" -d "${1%.*}" }
+function mkcd () { mkdir -p ${1} && cd ./${1} }
+function cwd () { echo -ne "\"$(pwd)\"" | xsel }
+
+#--------------------------------------------------------------------#
+#                           Git Alias                                #
+#--------------------------------------------------------------------#
+
+# alias gd="git clone '$(xsel)'"
+alias gc="git commit"
+alias gp="git pull"
+
+#--------------------------------------------------------------------#
+#                          Package Managers                          #
+#--------------------------------------------------------------------#
+
+
+
+function parus () { paru -Slq --aur | fzf --multi --height=50% --preview 'paru -Si --aur {1}' --preview-window=wrap | xargs -ro paru -S --aur }
+function pacs () { pacman -Slq | fzf --multi --height=50% --preview 'pacman -Si {1}' --preview-window=wrap | xargs -ro sudo pacman -S}
+function paci () {pacman -Qq | fzf --multi --height=50% | xargs -ro pacman -Qi}
+alias pacu="sudo pacman -Syyu --color auto && notify-send 'Pacman' 'Update finished' -i pamac-download  "
+alias pacr="sudo pacman -R"
+alias pacR="sudo pacman -Rcns"
+
+#--------------------------------------------------------------------#
+#                           Custom Scripts                           #
+#--------------------------------------------------------------------#
+
+alias c="$SCRIPTS/cd_subdir.sh"
+# alias ch="$SCRIPTS/cd_home.sh"
+alias con="$SCRIPTS/edit_confs.sh"
+alias u="$SCRIPTS/update"
+alias m="$SCRIPTS/man.sh"
+alias n="$SCRIPTS/neovim_search.sh"
+# alias s="$SCRIPTS/rga_search.sh"
+alias gt="source $SCRIPTS/bookmarks/go_to_bookmarks"
+alias pdfs="$SCRIPTS/pdf_search.sh"
+alias cht="$SCRIPTS/cht.sh"
+
+#--------------------------------------------------------------------#
+#                            Experemental                            #
+#--------------------------------------------------------------------#
+
+alias libretopdf="libreoffice --headless --invisible --convert-to pdf"
+alias win10='qemu-system-x86_64 \
+	-drive file=/home/inferno/docs/VMs/Windows10,format=raw \
+	-m 3G -enable-kvm'
+alias hdd='sudo mount /dev/sda2 /mnt/HDD'
+function gray () {gs \
+ -sOutputFile="$2".pdf \
+ -sDEVICE=pdfwrite \
+ -sColorConversionStrategy=Gray \
+ -dProcessColorModel=/DeviceGray \
+ -dCompatibilityLevel=1.4 \
+ -dNOPAUSE \
+ -dBATCH \ "$1";}
+function ytdl () { yt-dlp -x ${1} --embed-thumbnail --audio-format mp3 --audio-quality 0 -o "$HOME/music/%(title)s.%(ext)s";}
+# function pdfs () { zathura "$(sk --ansi -i -c 'rga --color=always --line-number "{}"' | cut -f1 -d: )" --fork }
