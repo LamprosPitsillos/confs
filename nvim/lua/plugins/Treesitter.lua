@@ -139,7 +139,7 @@ return {
             highlight = {
                 enable = true,
                 use_languagetree = true,
-                -- disable = { "latex", "tex" },
+                disable = { "latex", "tex" },
                 additional_vim_regex_highlighting = { "latex", "tex" },
             },
             query_linter = {

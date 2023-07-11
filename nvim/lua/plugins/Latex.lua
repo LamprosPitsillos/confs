@@ -1,11 +1,11 @@
 return {
     "lervag/vimtex",
-    enabled=false,
+    enabled=true,
     config = function()
         vim.g.vimtex_view_method = "zathura"
         vim.g.vimtex_compiler_method = "tectonic"
 
-        vim.g.vimtex_indent_enabled = 0
+        vim.g.vimtex_indent_enabled = 1
         vim.g.vimtex_quickfix_mode = 1
 
         vim.g.vimtex_quickfix_ignore_filters = { "Underfull", "Overfull", "Warning", }
@@ -15,8 +15,8 @@ return {
         vim.g.vimtex_matchparen_enabled = 1
         vim.g.vimtex_fold_enabled = 1
         vim.g.vimtex_complete_recursive_bib = 0
-        vim.g.vimtex_syntax_enabled = 0
-        vim.g.vimtex_toc_enabled = 0
+        vim.g.vimtex_syntax_enabled = 1
+        vim.g.vimtex_toc_enabled = 1
         vim.g.vimtex_motion_enabled = 1
         -- vim.g.vimtex_quickfix_enabled = 0
         vim.g.vimtex_text_obj_enabled = 1
@@ -25,7 +25,7 @@ return {
         vim.g.vimtex_fold_bib_enabled = 0
         vim.g.vimtex_indent_enabled = 1
         vim.g.vimtex_indent_bib_enabled = 0
-        vim.g.vimtex_doc_enabled = 0
+        vim.g.vimtex_doc_enabled = 1
         vim.g.vimtex_include_search_enabled = 1
         vim.g.vimtex_viewer_check = 1
 
