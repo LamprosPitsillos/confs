@@ -7,7 +7,7 @@ return {
         event = "VeryLazy",
         dependencies = {
             { "nvim-telescope/telescope-ui-select.nvim" },
-            {"jvgrootveld/telescope-zoxide"},
+            { "jvgrootveld/telescope-zoxide" },
             -- { dir = "/home/inferno/docs/Programming/Projects/telescope-zoxide" },
             { "nvim-telescope/telescope-file-browser.nvim" --[[ branch="feat/tree" ]] },
             { "benfowler/telescope-luasnip.nvim" },
@@ -117,6 +117,15 @@ return {
                 },
                 pickers = {
                     colorscheme = { enable_preview = true },
+                    lsp_references = {
+                        layout_strategy = "vertical",
+                        layout_config = {
+                            width = 0.9,
+                            height = 0.9,
+                            preview_cutoff = 1,
+                            mirror = false,
+                        }
+                    },
                     find_files = {
                         find_command = {
                             "fd",

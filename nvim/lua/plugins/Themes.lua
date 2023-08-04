@@ -1,6 +1,11 @@
 return {
-{ "ellisonleao/gruvbox.nvim",lazy=true },
-{ "rebelot/kanagawa.nvim" ,lazy=true},
+{ "ellisonleao/gruvbox.nvim",opts={
+    overrides = {
+        texTabularChar = {link = "GruvboxYellow"}
+    }
+    }},
+    {"sainnhe/gruvbox-material"},
+{ "rebelot/kanagawa.nvim"},
     { "navarasu/onedark.nvim",enabled=false, lazy = true, priority = 999, opts = {
         style = "warmer", -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
         transparent = false, -- Show/hide background

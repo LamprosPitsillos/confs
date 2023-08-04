@@ -58,7 +58,7 @@
 
 # Configure keymap in X11
     services.xserver.layout = "us";
-    services.xserver.xkbOptions = "eurosign:e,caps:escape";
+    services.xserver.xkbOptions = "caps:escape";
     services.xserver.windowManager.qtile.enable = true;
 
 # Enable CUPS to print documents.
@@ -75,14 +75,20 @@
     users.users.inferno = {
         isNormalUser = true;
         extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-            packages = with pkgs; [
+
+  packages =  with pkgs; [
+              nsxiv
                 nil
                 qutebrowser
                 tldr
                 neofetch
+                exa
+                rofi
+                fd
+                zathura
             ];
-    };
 
+    };
     qt = {
         enable = true;
         platformTheme = "qt5ct";
@@ -97,7 +103,8 @@
 
 # $ nix search wget
     environment.systemPackages = with pkgs; [
-            home-manager
+    nvimpager
+        ripgrep
             qt5ct
             fzf
             xsel
@@ -108,7 +115,6 @@
             qtile
             kitty
             vifm
-            zsh
             zoxide
             clang
             gcc
@@ -133,30 +139,7 @@
             (nerdfonts.override {fonts = ["FiraCode"];}) 
         ];
     };
-    programs.zsh= {
-        enable = true ;
-#   plugins = [ 
-#
-#   {
-#  name = "fast-syntax-highlighting";
-#  src = pkgs.fetchFromGitHub {
-#    owner = "zdharma-continuum";
-#    repo = "fast-syntax-highlighting";
-#    rev = "cf318e0";
-#    sha256 = "cf318e06a9b7c9f2219d78f41b46fa6e06011fd9" ;
-#    };
-# }
-#   {
-#  name = "fzf-zsh-plugin";
-#  src = pkgs.fetchFromGitHub {
-#    owner = "unixorn";
-#    repo = "fzf-zsh-plugin";
-#    rev = "5b07fb1";
-#    sha256 = "5b07fb15e5be8a2fa7e1783aa80e4b7609772d63" ;
-#  };
-# }
-#   ];
-    };
+programs.zsh.enable = true;
     users.defaultUserShell = pkgs.zsh;
 # Open ports in the firewall.
 # networking.firewall.allowedTCPPorts = [ ... ];
@@ -175,9 +158,8 @@
 # this value at the release version of the first install of this system.
 # Before changing this value read the documentation for this option
 # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-    system.stateVersion = "23.05"; # Did you read the comment?
+    system.stateVersion = "23.11"; # Did you read the comment?
 
 
 
 }
-

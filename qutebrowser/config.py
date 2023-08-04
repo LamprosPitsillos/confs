@@ -28,7 +28,7 @@ c.tabs.show = "multiple"
 c.tabs.background = True
 c.zoom.mouse_divider = 10
 leader = ","
-
+config.bind('<Escape>', 'mode-leave ;; jseval -q document.activeElement.blur()', mode='insert')
 config.bind(
         "sp", "set-cmd-text :print --pdf ~/downs/"
 )

@@ -141,8 +141,8 @@ M.nmap("<leader>pp", "<cmd>Lazy profile<cr>", { desc = "profile" })
 
 -- Replace >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 M.vmap("rb", [[:s/\%V\v]], { desc = "replace in block" })
-M.nmap("<leader>ra", toCursor([[:.,$s/\({}\)/gc]]), { desc = "replace from here" })
-M.vmap("<leader>ra", toCursor([["ry:.,$s/\(<c-r>r\)/{}/gc]]), { desc = "replace selection from here" })
+M.nmap("<leader>ra", "zz" .. toCursor([[:.,$s/\({}\)/gc]]), { desc = "replace from here" })
+M.vmap("<leader>ra", "zz" .. toCursor([["ry:.,$s/\(<c-r>r\)/{}/gc]]), { desc = "replace selection from here" })
 M.nmap("<leader>rl", toCursor([[:s/\v({})]]), { desc = "replace in line" })
 M.vmap("<leader>rl", toCursor([["ry:s/\(<c-r>r\)/{}/g]]), { desc = "replace selection in line" })
 M.nmap("<leader>rf", toCursor([[:%s/\v({})]]), { desc = "replace everywhere" })
