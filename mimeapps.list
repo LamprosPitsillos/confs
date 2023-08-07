@@ -36,3 +36,4 @@ x-scheme-handler/webcal=userapp-Thunderbird-R3O1T1.desktop;
 x-scheme-handler/webcals=userapp-Thunderbird-R3O1T1.desktop;
 text/x-log=nvim.desktop;
 video/mp4=mpv.desktop;
+text/x-c++src=neovide.desktop;
