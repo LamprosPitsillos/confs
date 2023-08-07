@@ -5,12 +5,15 @@
 { config, pkgs, ... }:
 
 {
+
+    nixpkgs.config.allowUnfree = true;
     imports =
         [ # Include the results of the hardware scan.
         ./hardware-configuration.nix
         ];
 # programs.home-manager.enable = true;
-
+ nix.settings.experimental-features = [ "nix-command" "flakes" ];
+documentation.man.generateCaches = true;
 # Use the GRUB 2 boot loader.
     boot.loader.grub.enable = true;
 # boot.loader.grub.efiSupport = true;
@@ -32,7 +35,14 @@
 # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
 # Select internationalisation properties.
-# i18n.defaultLocale = "en_US.UTF-8";
+    i18n = {
+        defaultLocale = "en_US.UTF-8";
+        supportedLocales = [
+            "en_US.UTF-8/UTF-8"
+            "el_GR.UTF-8/UTF-8"
+        ];
+    };
+
 # console = {
 #   font = "Lat2-Terminus16";
 #   keyMap = "us";
@@ -58,26 +68,70 @@
 
 # Configure keymap in X11
     services.xserver.layout = "us";
+    # services.xserver.displayManager.lightdm.greeters.gtk.enable =true;
+    services.xserver.displayManager.sddm.enable = true;
+    services.xserver.displayManager.sddm.autoNumlock = true;
     services.xserver.xkbOptions = "caps:escape";
     services.xserver.windowManager.qtile.enable = true;
+
+    programs.hyprland ={
+enable = true;
+nvidiaPatches = true;
+xwayland.enable = true;
+    };
 
 # Enable CUPS to print documents.
 # services.printing.enable = true;
 
 # Enable sound.
-    sound.enable = true;
-    hardware.pulseaudio.enable = true;
+    # sound.enable = true;
+    # hardware.pulseaudio.enable = true;
 
+security.rtkit.enable = true;
+services.pipewire = {
+  enable = true;
+  alsa.enable = true;
+  alsa.support32Bit = true;
+  pulse.enable = true;
+  # If you want to use JACK applications, uncomment this
+  #jack.enable = true;
+};
+
+hardware = {
+    opengl.enable=true;
+    nvidia.modesetting.enable=true;
+
+};
 # Enable touchpad support (enabled default in most desktopManager).
     services.xserver.libinput.enable = true;
-
+ nixpkgs.overlays = [
+    (final: prev: { qutebrowser = prev.qutebrowser.override { enableWideVine = true; }; })
+  ];
 # Define a user account. Don't forget to set a password with ‘passwd’.
     users.users.inferno = {
         isNormalUser = true;
         extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
 
   packages =  with pkgs; [
-              nsxiv
+# libreoffice
+# thunderbird
+  (writeShellApplication {
+  name = "dmenu";
+
+  runtimeInputs = [ rofi ];
+
+  text = ''
+      rofi -dmenu -i "$@"
+  '';
+})
+libsForQt5.qtstyleplugins
+graphite-cursors
+ripdrag
+xfce.thunar
+nsxiv
+ tectonic
+texlab
+lxappearance
                 nil
                 qutebrowser
                 tldr
@@ -100,14 +154,17 @@
         };
     };
 # List packages installed in system profile. To search, run:
-
 # $ nix search wget
     environment.systemPackages = with pkgs; [
-    nvimpager
-        ripgrep
+vimix-gtk-themes
+vimix-icon-theme
+    ripgrep
+    hyprland
             qt5ct
             fzf
             xsel
+            xdragon
+xcb-util-cursor
             neovim
             gnumake
             xdg-user-dirs
