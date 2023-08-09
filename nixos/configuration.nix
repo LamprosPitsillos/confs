@@ -2,27 +2,75 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running `nixos-help`).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs , lib ,... }:
 
 {
+    services.kanata = {
+        enable = true;
+        keyboards = {
+            "homerow" = {
+                devices= [];
+                config = ''
+                    (defsrc
+                     esc     f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12 prnt slck del home pgup pgdn end
+                     `       1    2    3    4    5    6    7    8    9    0    -    =    bspc
+                     tab     q    w    e    r    t    y    u    i    o    p    [    ]    \
+                     caps    a    s    d    f    g    h    j    k    l    ;    '    ret
+                     lsft      z    x    c    v    b    n    m    ,    .    /    rsft       up
+                     lctl    lmet lalt           spc            ralt cmp  rctl        left down rght
+                    )
 
+                    (defalias
+                     num   (layer-while-held nums) ;; Bind 'num' to numpad Layer
+                     esc_ctrl   (tap-hold 150 150 esc lctl);; Bind esc to Ctrl when holding
+                    )
+
+                    (deflayer qwerty
+                     caps     f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12 prnt slck del home pgup pgdn end
+                     `       1    2    3    4    5    6    7    8    9    0    -    =    bspc
+                     tab     q    w    e    r    t    y    u    i    o    p    [    ]    \
+                     @esc_ctrl    a    s    d    f    g    h    j    k    l    ;    '    ret
+                     lsft      z    x    c    v    b    n    m    ,    .    /    rsft       up
+                     lctl    lmet lalt           spc            @num cmp  rctl        left down rght
+                    )
+
+                    (deflayer nums
+                     _     _   _   _   _   _   _   _   _   _   _  _  _ _ _ _ _ _ _ _
+                     _   _    _    _    _    _    _    _    _    _    _     _    _    _
+                     _   _    _    -    =    _    _    [    ]    \    _    _    _    _
+                     _   1    2    3    4    5    6    7    8    9    0   _    _
+                     _   _    _    _    _    _    _    _    _    _    _    _       _
+                     _    _ bspc           ret            _ _  _        _ _ _
+
+                    )
+                    '';
+            };
+        };
+    };
     nixpkgs.config.allowUnfree = true;
     imports =
         [ # Include the results of the hardware scan.
         ./hardware-configuration.nix
         ];
 # programs.home-manager.enable = true;
- nix.settings.experimental-features = [ "nix-command" "flakes" ];
-documentation.man.generateCaches = true;
+    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+    documentation.man.generateCaches = true;
 # Use the GRUB 2 boot loader.
-    boot.loader.grub.enable = true;
-# boot.loader.grub.efiSupport = true;
-# boot.loader.grub.efiInstallAsRemovable = true;
-# boot.loader.efi.efiSysMountPoint = "/boot/efi";
+    boot.loader.grub= {
+        enable = true;
+        efiSupport = true;
+        device = "nodev"; # or "nodev" for efi only
+            efiInstallAsRemovable = true;
+    };
+    boot.loader.efi={
+        efiSysMountPoint = "/boot";
+# canTouchEfiVariables = true ;
+    };
+#
+# 
 # Define on which hard drive you want to install Grub.
-    boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
-        networking.hostName = "infernoPC"; # Define your hostname.
+    networking.hostName = "infernoPC"; # Define your hostname.
 # Pick only one of the below networking options.
 # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
         networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
@@ -39,7 +87,7 @@ documentation.man.generateCaches = true;
         defaultLocale = "en_US.UTF-8";
         supportedLocales = [
             "en_US.UTF-8/UTF-8"
-            "el_GR.UTF-8/UTF-8"
+                "el_GR.UTF-8/UTF-8"
         ];
     };
 
@@ -68,78 +116,81 @@ documentation.man.generateCaches = true;
 
 # Configure keymap in X11
     services.xserver.layout = "us";
-    # services.xserver.displayManager.lightdm.greeters.gtk.enable =true;
+# services.xserver.displayManager.lightdm.greeters.gtk.enable =true;
     services.xserver.displayManager.sddm.enable = true;
     services.xserver.displayManager.sddm.autoNumlock = true;
     services.xserver.xkbOptions = "caps:escape";
     services.xserver.windowManager.qtile.enable = true;
 
     programs.hyprland ={
-enable = true;
-nvidiaPatches = true;
-xwayland.enable = true;
+        enable = true;
+        nvidiaPatches = true;
+        xwayland.enable = true;
     };
 
 # Enable CUPS to print documents.
 # services.printing.enable = true;
 
 # Enable sound.
-    # sound.enable = true;
-    # hardware.pulseaudio.enable = true;
+# sound.enable = true;
+# hardware.pulseaudio.enable = true;
 
-security.rtkit.enable = true;
-services.pipewire = {
-  enable = true;
-  alsa.enable = true;
-  alsa.support32Bit = true;
-  pulse.enable = true;
-  # If you want to use JACK applications, uncomment this
-  #jack.enable = true;
-};
+    security.rtkit.enable = true;
+    services.pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+# If you want to use JACK applications, uncomment this
+#jack.enable = true;
+    };
 
-hardware = {
-    opengl.enable=true;
-    nvidia.modesetting.enable=true;
+    hardware = {
+        opengl.enable=true;
+        nvidia.modesetting.enable=true;
 
-};
+    };
 # Enable touchpad support (enabled default in most desktopManager).
     services.xserver.libinput.enable = true;
- nixpkgs.overlays = [
-    (final: prev: { qutebrowser = prev.qutebrowser.override { enableWideVine = true; }; })
-  ];
+    nixpkgs.overlays = [
+        (final: prev: { qutebrowser = prev.qutebrowser.override { enableWideVine = true; }; })
+    ];
 # Define a user account. Don't forget to set a password with ‘passwd’.
     users.users.inferno = {
         isNormalUser = true;
         extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+            initialPassword = "1234";
 
-  packages =  with pkgs; [
-# libreoffice
-# thunderbird
-  (writeShellApplication {
-  name = "dmenu";
+        packages =  with pkgs; [
+            libreoffice
+                thunderbird
+                eww-wayland
 
-  runtimeInputs = [ rofi ];
+                (writeShellApplication {
+                 name = "dmenu";
 
-  text = ''
-      rofi -dmenu -i "$@"
-  '';
-})
-libsForQt5.qtstyleplugins
-graphite-cursors
-ripdrag
-xfce.thunar
-nsxiv
- tectonic
-texlab
-lxappearance
-                nil
-                qutebrowser
-                tldr
-                neofetch
-                exa
-                rofi
-                fd
-                zathura
+                 runtimeInputs = [ rofi ];
+
+                 text = ''
+                 rofi -dmenu -i "$@"
+                 '';
+                 })
+        libsForQt5.qtstyleplugins
+            ripdrag
+            xfce.thunar
+            nsxiv
+            tectonic
+            texlab
+            lxappearance
+            nil
+            qutebrowser
+            tldr
+            neofetch
+            exa
+            rofi
+            wofi
+            fd
+            zathura
             ];
 
     };
@@ -156,15 +207,15 @@ lxappearance
 # List packages installed in system profile. To search, run:
 # $ nix search wget
     environment.systemPackages = with pkgs; [
-vimix-gtk-themes
-vimix-icon-theme
-    ripgrep
-    hyprland
+        vimix-gtk-themes
+            vimix-icon-theme
+            ripgrep
+            hyprland
             qt5ct
             fzf
             xsel
             xdragon
-xcb-util-cursor
+            xcb-util-cursor
             neovim
             gnumake
             xdg-user-dirs
@@ -173,10 +224,11 @@ xcb-util-cursor
             kitty
             vifm
             zoxide
+            kanata
             clang
             gcc
             starship
-    ];
+            ];
 
 # Some programs need SUID wrappers, can be configured further or are
 # started in user sessions.
@@ -196,7 +248,7 @@ xcb-util-cursor
             (nerdfonts.override {fonts = ["FiraCode"];}) 
         ];
     };
-programs.zsh.enable = true;
+    programs.zsh.enable = true;
     users.defaultUserShell = pkgs.zsh;
 # Open ports in the firewall.
 # networking.firewall.allowedTCPPorts = [ ... ];
@@ -207,7 +259,6 @@ programs.zsh.enable = true;
 # Copy the NixOS configuration file and link it from the resulting system
 # (/run/current-system/configuration.nix). This is useful in case you
 # accidentally delete configuration.nix.
-    system.copySystemConfiguration = true;
 
 # This value determines the NixOS release from which the default
 # settings for stateful data, like file locations and database versions

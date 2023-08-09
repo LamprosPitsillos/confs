@@ -1,6 +1,5 @@
-. /home/inferno/.config/zsh/.zsh_prompt
+eval "$(starship init zsh )"
 . /home/inferno/.config/zsh/.zsh_aliases_functions
-. /home/inferno/.config/zsh/.zsh_private_aliases
 set -o emacs
 setopt HIST_IGNORE_ALL_DUPS  # do not put duplicated command into history list
 setopt HIST_SAVE_NO_DUPS  # do not save duplicated command
@@ -33,9 +32,9 @@ zle -N down-line-or-beginning-search
 autoload -Uz colors && colors
 compinit
 # source /home/inferno/Documents/Packages/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.config/zsh/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
-source ~/.config/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
-source ~/.config/zsh/fzf_widgets/fzf_widgets.zsh
+# source ~/.config/zsh/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+# source ~/.config/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+# source ~/.config/zsh/fzf_widgets/fzf_widgets.zsh
 # source ~/.config/zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 # source ~/.config/zsh/zsh-vim/zsh-vim-mode.plugin.zsh
 eval "$(zoxide init zsh --cmd cd )"
@@ -50,6 +49,3 @@ bindkey -M menuselect '^h' vi-backward-char
 bindkey -M menuselect '^l' vi-forward-char
 
 # export OPENAI_API_KEY="$( gpg -qd $SCRIPTS/secrets/pass/chat_gpd_token.gpg )"
-
-# bun completions
-[ -s "/home/inferno/.bun/_bun" ] && source "/home/inferno/.bun/_bun"
