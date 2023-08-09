@@ -1,0 +1,236 @@
+(deflisten window_l :initial "..." "sh ~/.config/eww/scripts/get-window-title")
+(deflisten workspaces_l :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
+(deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace")
+
+
+(defvar bright_v false)
+(defvar volume_v false)
+(defvar visible_v true)
+
+(defpoll brightness_p :initial 1 :interval "1s" "brightnessctl -m | cut -f 4 -d , | tr -d % " )
+
+(defpoll current_volume_p :initial 1 :interval "1s" "wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -f 2 -d ' ' |tr -d . "  )
+(defpoll muted_volume_p :initial 1 :interval "1s" "wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -f 3 -d ' ' "  )
+
+(defpoll hour	:interval "1s"	"date '+%I'")
+(defpoll min	:interval "1s"	"date '+%M'")
+
+(defpoll wifi-icon :interval "1s" "scripts/wifi icon")
+(defpoll wifi-name :interval "1s" "scripts/wifi name")
+
+(defpoll battery			:interval "1s"	"scripts/battery icon")
+(defpoll battery-cappacity	:interval "1s"	"scripts/battery percent")
+
+(defpoll calendar_day :interval "10h" "date '+%d'")
+(defpoll calendar_month :interval "10h" "scripts/calendar")
+(defpoll calendar_year :interval "10h" "date '+%Y'")
+
+(defwidget lhs []
+(box 
+        :orientation "h"
+        :class "lhs"
+        :halign "start"
+
+    (workspaces)
+    ;; (window_name)
+    )
+)
+
+(defwidget rhs []
+(box 
+        :orientation "h"
+        :class "rhs"
+        :space-evenly false
+        :halign "end"
+
+    (utils_dock)
+    (time)
+    )
+)
+
+
+(defwidget utils_dock []
+(box :class "utils_dock" 
+        :orientation "h" 
+        :space-evenly false 
+        :spacing 20
+        :halign "end"
+    (volum)
+    (bright)
+    (wifi)
+    (bat)
+    ))
+
+(defwidget bar []
+(box 
+        :orientation "h"
+        :class "eww_bar"
+
+        (lhs)
+        (rhs)
+    )
+)
+
+(defwidget window_name []
+(box
+    (label 
+            :limit-width 100
+            :text "${window_l}"
+        )
+    )
+)
+
+
+(defwidget workspaces []
+(eventbox 
+        :onscroll "bash ~/.config/eww/scripts/change-active-workspace {} ${current_workspace}"
+        :class "works"
+    (box :space-evenly true
+        (label 
+                :text "${workspaces_l}${current_workspace}" 
+                :visible false
+            )
+        (for workspace in workspaces_l
+            (eventbox 
+                    :onclick "hyprctl dispatch workspace ${workspace.id}"
+                (box 
+                        :class 
+                        "workspace-entry ${workspace.id == current_workspace ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
+                    (label :text "${workspace.id}")
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+(defwidget wifi []
+    (box		
+        :space-evenly "false"
+        :orientation "h"  
+        :tooltip wifi-name
+        (button		:onclick "scripts/popup wifi" 
+            :class "icon wifi-icon" wifi-icon)))
+
+(defwidget bat []
+    (box	:orientation "h"	
+        :space-evenly "false"
+        (label	:class "icon battery-icon"		
+            :text battery	
+            :tooltip "Battery: ${battery-cappacity}%")))
+
+
+
+(defwidget volum []
+    (eventbox :onhover "${EWW_CMD} update volume_v=true" 		
+        :onhoverlost "${EWW_CMD} update volume_v=false"
+        (box      :orientation "h" 	  
+            :space-evenly "false" 
+            (revealer :transition "slideleft" 
+                :reveal volume_v         
+                :duration "550ms"
+                (scale    :class "volbar" 	  
+                    :value  current_volume_p
+                    :orientation "h"      
+                    :flipped false 
+                    :tooltip "Volume: ${current_volume_p}%" 
+                    :max 101 
+                    :min 0 
+                    :onchange "wpctl set-volume @DEFAULT_AUDIO_SINK@ {}% -l 1.0" )
+            )
+        (button   :onclick "scripts/popup audio"   
+                :class "icon volume-icon" 
+                 ""))))
+
+(defwidget bright []
+(eventbox :onhover "${EWW_CMD} update bright_v=true"   
+        :onhoverlost "${EWW_CMD} update bright_v=false"
+    (box    :orientation "h"  
+            :space-evenly "false"  
+        (revealer :transition "slideleft" 
+                :reveal bright_v   
+                :duration "550ms"
+            (scale :class "bribar" 
+                    :value brightness_p 
+                    :tooltip "Brightness: ${brightness_p}%" 
+                    :onchange "brightnessctl set {}%" 
+                    :orientation "h" 
+                    :flipped false 
+                    :max 101 
+                    :min 0))
+        (label :class "icon brightness-icon" 
+                :text "󰃠"))))
+;; (defwidget workspaces []
+;;   (box :class "workspaces"
+;;        :orientation "h"
+;;        :space-evenly true
+;;        :halign "start"
+;;        :spacing 10
+;;     (button :onclick "wmctrl -s 0" 1)
+;;     (button :onclick "wmctrl -s 1" 2)
+;;     (button :onclick "wmctrl -s 2" 3)
+;;     (button :onclick "wmctrl -s 3" 4)
+;;     (button :onclick "wmctrl -s 4" 5)
+;;     (button :onclick "wmctrl -s 5" 6)
+;;     (button :onclick "wmctrl -s 6" 7)
+;;     (button :onclick "wmctrl -s 7" 8)
+;;     (button :onclick "wmctrl -s 8" 9)))
+
+;; (defwidget music []
+;;   (box :class "music"
+;;        :orientation "h"
+;;        :space-evenly false
+;;        :halign "center"
+;;     {music != "" ? "🎵${music}" : ""}))
+
+
+(defwidget metric [label value onchange]
+(box :orientation "h"
+        :class "metric"
+        :space-evenly false
+    (box :class "label" label)
+    (scale :min 0
+            :max 101
+            :active {onchange != ""}
+            :value value
+            :onchange onchange)))
+
+
+
+;; (deflisten music :initial ""
+;;   "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")
+
+;; (defpoll volume :interval "1s"
+;;   "./scripts/getvol")
+
+
+(defwidget time []
+    (box	:orientation "h" 
+        :class "time" 
+        :halign "end"
+        (button	:onclick "scripts/popup calendar"	
+            :class "time-hour" hour)
+        (label :text ":")
+        (button	:onclick "scripts/popup calendar"	
+            :class "time-min"  min)))
+
+
+(defwidget cal []
+    (box :class "cal-box" 
+        :orientation "v"
+        (box :class "cal-inner-box"
+            (calendar :class "cal" 
+                :day calendar_day 
+                :month calendar_month 
+                :year calendar_year))))
+
+(defwindow bar
+    :monitor 0
+    :geometry (geometry :x "0%"
+        :y "5px"
+        :width "90%"
+        :height "4%"
+        :anchor "top center")
+    :exclusive true
+(bar))
