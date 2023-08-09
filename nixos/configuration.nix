@@ -109,7 +109,7 @@
         HISTFILE        = "$HOME/.config/zsh/.zsh_history";
         EDITOR          = "nvim";
         VISUAL          = "nvim";
-        MANPAGER        = "nvim -c \"map q :quit<cr>\" +Man!";
+        MANPAGER        = "nvim +Man!";
     };
 
 
@@ -162,6 +162,13 @@
             initialPassword = "1234";
 
         packages =  with pkgs; [
+discord
+networkmanager_dmenu
+brightnessctl
+hyprpaper
+jq
+socat
+wl-clipboard
             libreoffice
                 thunderbird
                 eww-wayland
@@ -191,6 +198,13 @@
             wofi
             fd
             zathura
+            dash
+# LSPs
+clang-tools_16
+nodePackages_latest.bash-language-server
+nodePackages_latest.vscode-langservers-extracted
+# Programming Utils
+hyperfine
             ];
 
     };
@@ -204,17 +218,20 @@
 
         };
     };
+
 # List packages installed in system profile. To search, run:
 # $ nix search wget
     environment.systemPackages = with pkgs; [
+swaynotificationcenter
+    libnotify
+    mpv
         vimix-gtk-themes
             vimix-icon-theme
             ripgrep
             hyprland
             qt5ct
             fzf
-            xsel
-            xdragon
+ripdrag
             xcb-util-cursor
             neovim
             gnumake

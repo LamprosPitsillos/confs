@@ -5,6 +5,7 @@ c.backend = "webengine"
 c.url.searchengines = {
     "DEFAULT": "https://duckduckgo.com/?q={}",
     "y": "https://www.youtube.com/results?search_query={}",
+    "n": "https://search.nixos.org/packages?channel=23.05&from=0&size=50&sort=relevance&type=packages&query={}" ,
     "gt": "https://github.com/search?q={}",
     "g": "https://www.google.com/search?q={}",
     "st":"https://stackoverflow.com/search?q={}",

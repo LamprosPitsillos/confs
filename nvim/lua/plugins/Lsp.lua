@@ -152,15 +152,11 @@ lsp.nil_ls.setup{
             --     on_attach = on_attach,
             --     capabilities = capabilities,
             -- }
-            lsp.r_language_server.setup {
-                on_attach = on_attach,
-                capabilities = capabilities,
-            }
-            lsp.tailwindcss.setup {
-                on_attach = on_attach,
-                capabilities = capabilities,
-                filetypes = {"typescript", "javascriptreact" },
-            }
+            -- lsp.tailwindcss.setup {
+            --     on_attach = on_attach,
+            --     capabilities = capabilities,
+            --     filetypes = {"typescript", "javascriptreact" },
+            -- }
             -- LATEX
             lsp.texlab.setup {
                 on_attach = on_attach,
