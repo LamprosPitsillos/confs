@@ -158,12 +158,12 @@
 # Define a user account. Don't forget to set a password with ‘passwd’.
     users.users.inferno = {
         isNormalUser = true;
-        extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+        extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
             initialPassword = "1234";
 
         packages =  with pkgs; [
+        iw
 discord
-networkmanager_dmenu
 brightnessctl
 hyprpaper
 jq
@@ -222,6 +222,7 @@ hyperfine
 # List packages installed in system profile. To search, run:
 # $ nix search wget
     environment.systemPackages = with pkgs; [
+    bottom
 swaynotificationcenter
     libnotify
     mpv
@@ -261,7 +262,7 @@ ripdrag
     services.openssh.enable = true;
 
     fonts = {
-        fonts = with pkgs; [
+        packages = with pkgs; [
             (nerdfonts.override {fonts = ["FiraCode"];}) 
         ];
     };
