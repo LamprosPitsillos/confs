@@ -16,13 +16,13 @@ return {
         vim.g.vimtex_fold_enabled = 1
         vim.g.vimtex_complete_recursive_bib = 0
         vim.g.vimtex_syntax_enabled = 1
-        vim.g.vimtex_syntax_conceal_disable = 1
+        vim.g.vimtex_syntax_conceal_disable = 0
         vim.g.vimtex_toc_enabled = 1
 
         vim.g.vimtex_motion_enabled = 1
         -- vim.g.vimtex_quickfix_enabled = 0
         vim.g.vimtex_text_obj_enabled = 1
-        -- vim.g.vimtex_view_enabled = 0
+        vim.g.vimtex_view_enabled = 1
         vim.g.vimtex_complete_enable = 1
         vim.g.vimtex_fold_bib_enabled = 0
         vim.g.vimtex_indent_enabled = 1

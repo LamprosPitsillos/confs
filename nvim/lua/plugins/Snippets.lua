@@ -52,6 +52,15 @@ return {
             end,
             mode = "i"
         }
+            ,{
+            "<C-k>",
+            function()
+                if require("luasnip").choice_active() then
+                    require("luasnip").change_choice(-1)
+                end
+            end,
+            mode = "i"
+        }
 
         }
     },

@@ -256,7 +256,7 @@ fileviewer *.[1-8] man ./%c | col -b
 filextype *.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm,*.webp,*.svg
         \ {View in sxiv}
         " \ sxiv -q -a -s f '%f' %d/* 2> /dev/null &,
-        \ sxiv -q -a -s f %f 2> /dev/null &,
+        \ vimiv %f 2> /dev/null &,
         \ {View in gpicview}
         \ gpicview %c,
         \ {View in shotwell}
@@ -552,7 +552,7 @@ nnoremap ,c :write | edit $MYVIFMRC | restart<cr>
 nnoremap ,C :!gvim --remote-tab-silent $MYVIFMRC &<cr>
 " Open sxiv to view cwd
 nnoremap ,s :!sxiv %d &<cr>
-noremap ,d :!dragon %f &<cr>
+noremap ,d :!ripdrag %f &<cr>
 " Toggle wrap setting on ,w key
 nnoremap ,w :set wrap!<cr>
 

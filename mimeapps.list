@@ -22,6 +22,7 @@ application/lrf=calibre-lrfviewer.desktop
 video/mp4=mpv.desktop
 x-scheme-handler/viber=viber.desktop
 x-scheme-handler/postman=Postman.desktop
+x-scheme-handler/magnet=userapp-transmission-gtk-NUIWA2.desktop
 
 [Removed Associations]
 
@@ -37,3 +38,5 @@ x-scheme-handler/webcals=userapp-Thunderbird-R3O1T1.desktop;
 text/x-log=nvim.desktop;
 video/mp4=mpv.desktop;
 text/x-c++src=neovide.desktop;
+image/jpeg=vimiv.desktop;
+x-scheme-handler/magnet=userapp-transmission-gtk-NUIWA2.desktop;

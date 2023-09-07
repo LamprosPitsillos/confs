@@ -20,6 +20,7 @@ $white: $foreground;
 .eww_bar{
   background-color: $background;
   padding: 0 2rem;
+  border-radius : 5px;
 }
 
 // Launcher
@@ -33,15 +34,19 @@ $white: $foreground;
 // Workspaces
 .works {
 font-family: "Font Awesome 6 Pro";
-padding: .2rem .5rem .2rem .5rem;
 background-color: $black;
 border-radius: 5px;
 }
+
 tooltip {
     background-color: $black;
+    border: 3px solid $background;
+    border-radius: 5px;
 }
 .workspace-entry {
 
+padding: .2rem .5rem .2rem .5rem;
+// border: 5px solid $green;
   font-family: Comic Mono;
   font-weight: bold;
   font-size: 1.1em;
@@ -150,6 +155,10 @@ border-radius: 5px;
 &.battery-icon {
   color: $blue;
 }
+
+&.notification-icon{
+  color: $yellow;
+}
 }
 
 scale trough {
@@ -174,29 +183,32 @@ scale trough {
 //
 // }
 
-// .utils_dock {
+.utils_dock {
 // border: 1px solid $green;
 //
 // & box {
 //  border: 1px solid $red;
 // }
-//
-//   min-width: 80px;
-// }
+
+  min-width: 80px;
+  padding: 0 10 0 10;
+}
 
 // .rhs {
 // border: 10px solid $white;
 //
 // }
 // Clock
-.time {
+.bar-time {
   font-family: Comic Mono;
   font-weight: bold;
   font-size: 1.1em;
   background-color: $black;
   color: $white;
   border-radius: 5px;
-  padding: .7rem 0 .5rem 0;
+&>box {
+  padding: .7rem .5rem .5rem .5rem;
+}
   margin: .5rem 0 .5rem 0;
 }
 
@@ -206,6 +218,7 @@ scale trough {
   font-family: Comic Mono;
   font-size: 1em;
   font-weight: bold;
+  border-radius: 10px;
 
   .cal-inner-box {
       padding: 1rem 1rem .2rem;
@@ -269,3 +282,5 @@ color: $background;
 .button-lock{
   color: $blue;
 }
+
+@import "windows/powermenu.scss";

@@ -134,7 +134,24 @@ return {
             indent = {
                 enable = true, disable = { "python" }
             },
-            ensure_installed = {"lua","c","cpp","yuck","rust","go","javascript","typescript","tsx","markdown", "markdown_inline" },       -- one of "all", "maintained" (parsers with maintainers), and a list of languages
+            ensure_installed = {
+                "prisma",
+                "lua",
+                "c",
+                "cpp",
+                "yuck",
+                "rust",
+                "go",
+                "javascript",
+                "typescript",
+                "tsx",
+                "markdown",
+                "markdown_inline",
+                "bash",
+                "nix",
+                "norg",
+                "python"
+            },       -- one of "all", "maintained" (parsers with maintainers), and a list of languages
             ignore_install = { "comment" }, -- List of parsers to ignore installing
             highlight = {
                 enable = true,
@@ -197,5 +214,16 @@ return {
         mode = "cursor",     -- Line used to calculate context. Choices: 'cursor', 'topline'
         separator = nil,     -- Separator between context and content. Should be a single character string, like '-'.
     }
+},
+    { "luckasRanarison/tree-sitter-hypr",dependencies="nvim-treesitter/nvim-treesitter",config=function (_,opts)
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+parser_config.hypr = {
+  install_info = {
+    url = "https://github.com/luckasRanarison/tree-sitter-hypr",
+    files = { "src/parser.c" },
+    branch = "master",
+  },
+  filetype = "hypr",
 }
+    end }
 }

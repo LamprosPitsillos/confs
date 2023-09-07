@@ -1,6 +1,7 @@
 config.load_autoconfig(True)
 c.fonts.tabs.selected = "default_size Fira Code Bold"
 c.fonts.tabs.unselected = "default_size Fira Code Bold"
+c.fonts.completion.entry = "default_size Fira Code Bold"
 c.backend = "webengine"
 c.url.searchengines = {
     "DEFAULT": "https://duckduckgo.com/?q={}",
@@ -11,7 +12,7 @@ c.url.searchengines = {
     "st":"https://stackoverflow.com/search?q={}",
         "CPP":"https://duckduckgo.com/?sites=cppreference.com&q={}"
 }
-c.content.javascript.can_access_clipboard = True
+c.content.javascript.clipboard = "access-paste"
 c.aliases = {
     "w": "session-save",
     "q": "close",
@@ -19,8 +20,9 @@ c.aliases = {
     "wq": "quit --save",
     "wqa": "quit --save",
 }
+# c.statusbar.widgets = ["keypress","url","text:█","scroll","progress"]
 c.confirm_quit = ["always"]
-c.editor.command = ["kitty", "-e", "nvim", "{}","+'set filetype=markdown'"]
+c.editor.command = ["kitty", "nvim", "{}","+'set filetype=markdown'"]
 c.scrolling.smooth = True
 c.spellcheck.languages = ["el-GR", "en-US"]
 c.statusbar.show = "always"
@@ -29,13 +31,17 @@ c.tabs.show = "multiple"
 c.tabs.background = True
 c.zoom.mouse_divider = 10
 leader = ","
+
 config.bind('<Escape>', 'mode-leave ;; jseval -q document.activeElement.blur()', mode='insert')
 config.bind(
         "sp", "set-cmd-text :print --pdf ~/downs/"
 )
 
 config.bind(
-    "cb", "set colors.webpage.bg white"
+    "<Ctrl-j>", "completion-item-focus next",mode="command"
+)
+config.bind(
+    "<Ctrl-k>", "completion-item-focus prev",mode="command"
 )
 config.bind(
     "<Ctrl-o>" + "y", "open -t www.youtube.com"

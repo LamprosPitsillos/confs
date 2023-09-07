@@ -2,10 +2,12 @@
 
 bat="/sys/class/power_supply/BAT1/"
 per="$(cat "$bat/capacity")"
+
 icon=""
+
 status="$(cat "$bat/status")"
 
-icon() {
+get_icon() {
     if [ "$status" = "Full" ]; then
         icon="󰂄"
     elif [ "$status" = "Charging" ];then
@@ -28,10 +30,8 @@ icon() {
             icon="󰂇"
         elif [ "$per" -gt "10" ]; then
             icon="󰂆"
-            notify-send -u critical "Battery Low" "Connect Charger"
         else
             icon="󰢜"
-            notify-send -u critical "Battery Low" "Connect Charger"
         fi
 
     else
@@ -65,10 +65,9 @@ icon() {
 echo "$icon"
 }
 
-percent() {
-echo $per
+
+get_info() {
+acpi -b | cut -d: -f2- 
 }
 
-[ "$1" = "icon" ] && icon && exit
-[ "$1" = "percent" ] && percent && exit
-exit
+jq -n --arg info "$(get_info)" --arg icon "$(get_icon)" '{info: $info, icon: $icon}'

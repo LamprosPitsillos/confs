@@ -4,6 +4,12 @@
 #--------------------------------------------------------------------#
 #                               Shell                                #
 #--------------------------------------------------------------------#
+alias nup="sudo nixos-rebuild switch --flake /home/inferno/.nixos-config"
+alias hup="home-manager switch -b backup --flake /home/inferno/.nixos-config\#inferno"
+
+alias nconf="nv /home/inferno/.nixos-config/nixos/configuration.nix"
+alias hconf="nv /home/inferno/.nixos-config/home-manager/home.nix"
+
 alias pomodoro="porsmo"
 alias btd="bluetoothctl power off"
 alias btc='bluetoothctl power on && bluetoothctl connect $(bluetoothctl devices | fzf --tac --reverse --height=30% --border | cut -d " " -f2)'
@@ -24,7 +30,6 @@ alias ls='ls --sort time --color=auto -h'
 alias la='exa --icons --long --accessed --all'
 alias lar='exa --icons --long --accessed --all --tree --level '
 alias tree='exa --icons --tree --accessed'
-alias nconf="nvim $HOME/.config/nvim/init.lua"
 alias nv="nvim"
 alias q="exit"
 alias fm="vifm ."
@@ -47,19 +52,6 @@ function cwd () { echo -ne "\"$(pwd)\"" | xsel }
 # alias gd="git clone '$(xsel)'"
 alias gc="git commit"
 alias gp="git pull"
-
-#--------------------------------------------------------------------#
-#                          Package Managers                          #
-#--------------------------------------------------------------------#
-
-
-
-function parus () { paru -Slq --aur | fzf --multi --height=50% --preview 'paru -Si --aur {1}' --preview-window=wrap | xargs -ro paru -S --aur }
-function pacs () { pacman -Slq | fzf --multi --height=50% --preview 'pacman -Si {1}' --preview-window=wrap | xargs -ro sudo pacman -S}
-function paci () {pacman -Qq | fzf --multi --height=50% | xargs -ro pacman -Qi}
-alias pacu="sudo pacman -Syyu --color auto && notify-send 'Pacman' 'Update finished' -i pamac-download  "
-alias pacr="sudo pacman -R"
-alias pacR="sudo pacman -Rcns"
 
 #--------------------------------------------------------------------#
 #                           Custom Scripts                           #

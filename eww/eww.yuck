@@ -1,29 +1,28 @@
-(deflisten window_l :initial "..." "sh ~/.config/eww/scripts/get-window-title")
-(deflisten workspaces_l :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
-(deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace")
-
+(deflisten window_l :initial "..." "scripts/get-window-title")
+(deflisten workspaces_l :initial "[]" "scripts/get-workspaces")
+(deflisten current_workspace :initial "1" "scripts/get-active-workspace")
 
 (defvar bright_v false)
 (defvar volume_v false)
 (defvar visible_v true)
 
-(defpoll brightness_p :initial 1 :interval "1s" "brightnessctl -m | cut -f 4 -d , | tr -d % " )
+(defpoll brightness_p  :interval "1s" "scripts/brightness get" )
 
-(defpoll current_volume_p :initial 1 :interval "1s" "wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -f 2 -d ' ' |tr -d . "  )
-(defpoll muted_volume_p :initial 1 :interval "1s" "wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -f 3 -d ' ' "  )
+(defpoll notification_icon_p :interval "1s" "scripts/notification icon" )
 
-(defpoll hour	:interval "1s"	"date '+%I'")
-(defpoll min	:interval "1s"	"date '+%M'")
+(defpoll volume_json  :interval "1s" "scripts/volume"  )
 
-(defpoll wifi-icon :interval "1s" "scripts/wifi icon")
-(defpoll wifi-name :interval "1s" "scripts/wifi name")
+(defpoll time_json	:interval "1s"	"date +'{\"hour\": \"%I\", \"minute\": \"%M\"}'")
 
-(defpoll battery			:interval "1s"	"scripts/battery icon")
-(defpoll battery-cappacity	:interval "1s"	"scripts/battery percent")
+(defpoll wifi_json :interval "1s" "scripts/wifi")
 
-(defpoll calendar_day :interval "10h" "date '+%d'")
-(defpoll calendar_month :interval "10h" "scripts/calendar")
+(defpoll battery_json :interval "1s"	"scripts/battery")
+
+(defpoll calendar_day :interval "20s" "date '+%d'")
+(defpoll calendar_month :interval "10h" "date '+%m'")
 (defpoll calendar_year :interval "10h" "date '+%Y'")
+
+(defpoll calendar_json :interval "20s" "date +'{\"day\": %-d ,\"month\": %-m ,\"year\" : %Y }'")
 
 (defwidget lhs []
 (box 
@@ -59,6 +58,7 @@
     (bright)
     (wifi)
     (bat)
+    (notification)
     ))
 
 (defwidget bar []
@@ -67,6 +67,7 @@
         :class "eww_bar"
 
         (lhs)
+        ;; (window_name)
         (rhs)
     )
 )
@@ -85,9 +86,9 @@
 (eventbox 
         :onscroll "bash ~/.config/eww/scripts/change-active-workspace {} ${current_workspace}"
         :class "works"
-    (box :space-evenly true
+    (box :space-evenly false
         (label 
-                :text "${workspaces_l}${current_workspace}" 
+                :text "${workspaces_l}" 
                 :visible false
             )
         (for workspace in workspaces_l
@@ -109,16 +110,30 @@
     (box		
         :space-evenly "false"
         :orientation "h"  
-        :tooltip wifi-name
-        (button		:onclick "scripts/popup wifi" 
-            :class "icon wifi-icon" wifi-icon)))
+        :tooltip "${ wifi_json.info }"
+        (button		
+            :onclick "scripts/popup wifi" 
+            :class "icon wifi-icon" "${ wifi_json.icon }")))
+
+(defwidget notification []
+    (box		
+        :space-evenly "false"
+        :orientation "h"  
+        ;; :tooltip wifi-name
+        (button		
+            :onrightclick "scripts/notification dnd"
+            :onclick "scripts/notification open" 
+            :class "icon notification-icon" notification_icon_p)))
 
 (defwidget bat []
-    (box	:orientation "h"	
+    (box	
+
+        :orientation "h"	
         :space-evenly "false"
-        (label	:class "icon battery-icon"		
-            :text battery	
-            :tooltip "Battery: ${battery-cappacity}%")))
+        :tooltip "${battery_json.info}"
+        (button	:class "icon battery-icon"		
+            "${battery_json.icon}"
+            )))
 
 
 
@@ -131,21 +146,24 @@
                 :reveal volume_v         
                 :duration "550ms"
                 (scale    :class "volbar" 	  
-                    :value  current_volume_p
+                    :value  "${volume_json.volume}"
                     :orientation "h"      
                     :flipped false 
-                    :tooltip "Volume: ${current_volume_p}%" 
+                    :tooltip "Volume: ${volume_json.volume}" 
                     :max 101 
                     :min 0 
-                    :onchange "wpctl set-volume @DEFAULT_AUDIO_SINK@ {}% -l 1.0" )
+                    :onchange "scripts/volume set {}" )
             )
-        (button   :onclick "scripts/popup audio"   
+        (button :onclick "scripts/volume mute"   
                 :class "icon volume-icon" 
-                 ""))))
+                 "${volume_json.icon}"
+                 ))))
+
 
 (defwidget bright []
 (eventbox :onhover "${EWW_CMD} update bright_v=true"   
         :onhoverlost "${EWW_CMD} update bright_v=false"
+        ;; :onscroll "scripts/brightness {}"
     (box    :orientation "h"  
             :space-evenly "false"  
         (revealer :transition "slideleft" 
@@ -154,7 +172,7 @@
             (scale :class "bribar" 
                     :value brightness_p 
                     :tooltip "Brightness: ${brightness_p}%" 
-                    :onchange "brightnessctl set {}%" 
+                    :onchange "scripts/brightness set {}" 
                     :orientation "h" 
                     :flipped false 
                     :max 101 
@@ -206,14 +224,17 @@
 
 
 (defwidget time []
-    (box	:orientation "h" 
-        :class "time" 
+(eventbox	:orientation "h" 
+        :class "bar-time" 
         :halign "end"
-        (button	:onclick "scripts/popup calendar"	
-            :class "time-hour" hour)
+        :onclick "scripts/popup calendar"
+    (box :orientation "h" 
+        (label :class "time-hour" :text "${time_json.hour}")
         (label :text ":")
-        (button	:onclick "scripts/popup calendar"	
-            :class "time-min"  min)))
+        (label	:class "time-min"  :text "${time_json.minute}")
+        )
+    )
+)
 
 
 (defwidget cal []
@@ -221,9 +242,19 @@
         :orientation "v"
         (box :class "cal-inner-box"
             (calendar :class "cal" 
-                :day calendar_day 
-                :month calendar_month 
-                :year calendar_year))))
+                :show-details true
+                :day "${calendar_json.day}" 
+                :month ( "${calendar_json.month}" - 1 )
+                :year "${calendar_json.year}"))))
+
+(defwindow calendar
+    :monitor 0
+	:geometry (geometry :x "79%" 
+						:y "1%" 
+						:width "270px" 
+						:height "60px")
+    :namespace "calendar"
+(cal))
 
 (defwindow bar
     :monitor 0
@@ -233,4 +264,7 @@
         :height "4%"
         :anchor "top center")
     :exclusive true
+    :namespace "eww"
 (bar))
+
+(include "windows/powermenu.yuck")

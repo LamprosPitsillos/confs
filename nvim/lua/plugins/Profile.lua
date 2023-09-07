@@ -1,6 +1,7 @@
 return {
     {
         "https://github.com/stevearc/profile.nvim",
+        enabled = false,
         lazy = false,
         priority = 1500,
         config = function(_, opts)
