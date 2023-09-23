@@ -8,7 +8,6 @@ return {
         dependencies = {
             { "nvim-telescope/telescope-ui-select.nvim" },
             { "jvgrootveld/telescope-zoxide" },
-            -- { dir = "/home/inferno/docs/Programming/Projects/telescope-zoxide" },
             { "nvim-telescope/telescope-file-browser.nvim" --[[ branch="feat/tree" ]] },
             { "benfowler/telescope-luasnip.nvim" },
             { "nvim-telescope/telescope-symbols.nvim" },

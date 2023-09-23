@@ -1,11 +1,5 @@
 return {
     {
-        "pmizio/typescript-tools.nvim",
-        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-        opts = {},
-        enable = true
-    },
-    {
         "neovim/nvim-lspconfig",
         dependencies = {
             { "folke/neodev.nvim", opts = {} },
@@ -13,12 +7,17 @@ return {
         },
         event = { "BufReadPre", "BufNewFile" },
         config = function()
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
+            capabilities.textDocument.foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true
+            }
+            capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
+            vim.lsp.set_log_level('debug')
             -- local util = require "lspconfig.util"
-            require("neodev").setup({
-                -- add any options here, or leave empty to use the default settings
-            })
-            local lsp = require("lspconfig")
+            require("neodev").setup({})
+
             local border = {
                 { "╭", "FloatBorder" },
                 { "─", "FloatBorder" },
@@ -29,6 +28,23 @@ return {
                 { "╰", "FloatBorder" },
                 { "│", "FloatBorder" },
             }
+
+            local lsp = require("lspconfig")
+            lsp.util.default_config = vim.tbl_extend(
+                "force",
+                lsp.util.default_config,
+                {
+                    autostart = true,
+                    handlers = {
+                        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+                            border = border,
+                        }),
+                        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+                            border = border,
+                        })
+                    }
+                }
+            )
             vim.diagnostic.config({
                 underline = true,
                 virtual_text = {
@@ -39,88 +55,83 @@ return {
                 update_in_insert = true,
             })
             -- LSP settings
+            --
+            --
+            --
+
             local on_attach = function(client, bufnr)
-                vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = bufnr })
-                vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-                    border = border,
-                })
-                vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-                    border = border,
-                })
             end
 
-            lsp.jsonls.setup {
-                on_attach = on_attach,
-                capabilities = capabilities,
-            }
-
-            lsp.bashls.setup({
-                on_attach = on_attach,
-                capabilities = capabilities,
-            })
-            -- lsp.ruff_lsp.setup( {
-            --     on_attach = on_attach,
-            --     capabilities = capabilities,
-            --     } )
-            lsp.pylsp.setup {
-                on_attach = on_attach,
-                capabilities = capabilities,
-                settings = {
-                    pylsp = {
-                        plugins = {
-                            pycodestyle = {
-                                -- ignore = { "E201", "E202", "E231", "W391" },
-                                maxLineLength = 100
+            local servers = {
+                jsonls = {},
+                bashls = {},
+                ruff_lsp = {
+                    init_options = {
+                        settings = {
+                            -- Any extra CLI arguments for `ruff` go here.
+                            args = {},
+                        }
+                    }
+                },
+                pylsp = {
+                    settings = {
+                        pylsp = {
+                            plugins = {
+                                ruff = {
+                                    enabled = true,
+                                    extendSelect = { "I" },
+                                },
                             }
                         }
                     }
-                }
-            }
-            lsp.cmake.setup({
-                on_attach = on_attach,
-                capabilities = capabilities,
-            })
-            -- lsp.angularls.setup({
-            -- 	on_attach = on_attach,
-            -- 	capabilities = capabilities,
-            -- })
-            lsp.html.setup({
-                on_attach = on_attach,
-                capabilities = capabilities,
-            })
-            lsp.cssls.setup({
-                on_attach = on_attach,
-                capabilities = capabilities,
-            })
-
-            lsp.quick_lint_js.setup {
-
-                filetypes = { "javascript", "javascriptreact" },
-                on_attach = on_attach,
-                capabilities = capabilities,
-            }
-
-            lsp.prismals.setup({
-                cmd = {
-                    "/home/inferno/docs/Packages/prisma-lsp/node_modules/@prisma/language-server/dist/src/bin.js",
-                    "--stdio"
                 },
-                on_attach = on_attach,
-                capabilities = capabilities,
-                -- cmd = {
-                --     "papa",
-                --     "john"
-                -- }
-
-            })
-            lsp.nil_ls.setup {
-
-                on_attach = on_attach,
-                capabilities = capabilities,
+                cmake = {},
+                html = {},
+                typst_lsp={
+                    settings = {
+                        exportPdf = "onType" -- Choose onType, onSave or never.
+                        -- serverPath = "" -- Normally, there is no need to uncomment it.
+                    }
+                },
+                cssls = {},
+                quick_lint_js = {},
+                prismals = {
+                    cmd = {
+                        "/home/inferno/docs/Packages/prisma-lsp/node_modules/@prisma/language-server/dist/src/bin.js",
+                        "--stdio" },
+                        {
+                          prisma = {
+                            prismaFmtBinPath = "/nix/store/hmxi33qpcc3w2lk3z8n5v69pb3bcqd3i-prisma-engines-4.13.0/bin/prisma-fmt"
+                          }
+                        }
+                },
+                nil_ls = {},
+                sqlls = {},
+                clangd = {},
+                texlab = {},
+                lua_ls = {
+                    settings = {
+                        Lua = {
+                            workspace = {
+                                checkThirdParty = false,
+                            },
+                        },
+                    },
+                },
             }
+
+            for name, prop in pairs(servers) do
+                lsp[name].setup({
+                    on_attach = on_attach,
+                    capabilities = capabilities,
+                    cmd = prop.cmd,
+                    filetypes = prop.filetypes,
+                    settings = prop.settings
+                })
+            end
             require("typescript-tools").setup {
                 on_attach = on_attach,
-                capabilities = capabilities,
+                capabilities=capabilities,
                 settings = {
                     -- spawn additional tsserver instance to calculate diagnostics on it
                     separate_diagnostic_server = true,
@@ -147,91 +158,17 @@ return {
                     complete_function_calls = false,
                 },
             }
-            -- require'lspconfig'.clangd.setup{on_attach = on_attach} -- Lsp.clang
-            lsp.sqlls.setup {
-                on_attach = on_attach,
-                capabilities = capabilities,
-            }
-            lsp.clangd.setup({
-                on_attach = on_attach,
-                capabilities = capabilities,
-            })
-            -- lsp.ccls.setup {
-            --     on_attach = on_attach,
-            --     capabilities = capabilities,
-            -- }
-            -- lsp.tailwindcss.setup {
-            --     on_attach = on_attach,
-            --     capabilities = capabilities,
-            --     filetypes = {"typescript", "javascriptreact" },
-            -- }
-            -- LATEX
-            lsp.texlab.setup {
-                on_attach = on_attach,
-                capabilities = capabilities,
-            }
-            -- -- Lsp.Lua
-
-            local sumneko_binary = "/usr/bin/lua-language-server"
-
-            local runtime_path = vim.split(package.path, ";")
-            table.insert(runtime_path, "lua/?.lua")
-            table.insert(runtime_path, "lua/?/init.lua")
-
-            lsp.lua_ls.setup({
-                filetypes = { "lua" },
-                on_attach = on_attach,
-                capabilities = capabilities,
-                cmd = { sumneko_binary, "-E", "usr/share/lua-language-server/main.lua" },
-                settings = {
-                    Lua = {
-                        runtime = {
-                            -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                            version = "LuaJIT",
-                            -- Setup your lua path
-                            -- path = runtime_path,
-                        },
-                        diagnostics = {
-                            -- Get the language server to recognize the `vim` global
-                            globals = { "vim" },
-                        },
-                        -- workspace = {
-                        --     -- Make the server aware of Neovim runtime files
-                        --     -- library = vim.api.nvim_get_runtime_file("", true),
-                        --     library = vim.api.nvim_get_runtime_file("*", true),
-                        --     -- library = {
-                        --     --     [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-                        --     --     [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-                        --     --     [vim.fn.stdpath("config") .. "/lua"] = true,
-                        --     -- }
-                        -- },
-                        format = {
-                            enable = true,
-                            -- Put format options here
-                            defaultConfig = {
-                                indent_style = "space",
-                                indent_size = "4",
-                                quote_style = "double"
-                            }
-                        },
-                        -- Do not send telemetry data containing a randomized but unique identifier
-                        telemetry = {
-                            enable = false,
-                        },
-
-                        hints = { enable = true },
-                    },
-                },
-            })
             vim.api.nvim_create_autocmd("LspAttach", {
                 group = vim.api.nvim_create_augroup("UserLspConfig", {}),
                 callback = function(ev)
+                    -- Enable completion triggered by <c-x><c-o>
+                    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
                     -- Buffer local mappings.
                     -- See `:help vim.lsp.*` for documentation on any of the below functions
                     --
-                    local diagnostic = vim.diagnostic
-                    local lsp_b      = vim.lsp.buf
-                    local map        = vim.keymap.set
+                    local diagnostic        = vim.diagnostic
+                    local lsp_b             = vim.lsp.buf
+                    local map               = vim.keymap.set
 
                     map("n", "[d", diagnostic.goto_prev, { desc = "prev error", buffer = ev.buf })
                     map("n", "]d", diagnostic.goto_next, { desc = "next error", buffer = ev.buf })
@@ -251,7 +188,7 @@ return {
                     map("n", "<leader>ce", diagnostic.open_float, { desc = "show line diagnostics", buffer = ev.buf })
                     map("n", "<leader>cs", lsp_b.signature_help, { desc = "signature help", buffer = ev.buf })
                     map("n", "K", lsp_b.hover, { desc = "hover", buffer = ev.buf })
-                    map("v", "<space>=", function() lsp_b.format({ async = true }) end,
+                    map("n", "<space>=", function() lsp_b.format({ async = true }) end,
                         { desc = "formatting", buffer = ev.buf })
                     map("n", "<leader>lI", function() lsp_b.inlay_hint(0) end,
                         { desc = "Toggle inlay hints", buffer = ev.buf }
@@ -261,5 +198,13 @@ return {
             })
         end
     },
+    {
 
+        -- "pmizio/typescript-tools.nvim",
+        dir="~/docs/Programming/Projects/CONTRIBUTE/typescript-tools.nvim",
+        dev=true,
+        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+        opts = {},
+        enabled = true
+    },
 }

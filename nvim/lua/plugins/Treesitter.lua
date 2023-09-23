@@ -5,7 +5,6 @@ return {
         event = { "BufReadPost", "BufNewFile" },
         dependencies = {
             "windwp/nvim-ts-autotag",
-            "nvim-treesitter/playground",
             -- "https://gitlab.com/HiPhish/nvim-ts-rainbow2",
             "nvim-treesitter/nvim-treesitter-textobjects",
         },
@@ -104,24 +103,6 @@ return {
                 -- Highlight the entire buffer all at once
                 -- strategy = require 'ts-rainbow.strategy.global',
               },
-            playground = {
-                enable = true,
-                disable = {},
-                updatetime = 25,         -- Debounced time for highlighting nodes in the playground from source code
-                persist_queries = false, -- Whether the query persists across vim sessions
-                keybindings = {
-                    toggle_query_editor = "o",
-                    toggle_hl_groups = "i",
-                    toggle_injected_languages = "t",
-                    toggle_anonymous_nodes = "a",
-                    toggle_language_display = "I",
-                    focus_language = "f",
-                    unfocus_language = "F",
-                    update = "R",
-                    goto_node = "<cr>",
-                    show_help = "?",
-                },
-            },
             incremental_selection = {
                 enable = true,
                 keymaps = {
@@ -135,22 +116,25 @@ return {
                 enable = true, disable = { "python" }
             },
             ensure_installed = {
-                "prisma",
-                "lua",
+                "bash",
                 "c",
+                "cmake",
                 "cpp",
-                "yuck",
-                "rust",
                 "go",
                 "javascript",
-                "typescript",
-                "tsx",
+                "jsdoc",
+                "json",
+                "lua",
                 "markdown",
                 "markdown_inline",
-                "bash",
                 "nix",
                 "norg",
-                "python"
+                "prisma",
+                "python",
+                "rust",
+                "tsx",
+                "typescript",
+                "yuck",
             },       -- one of "all", "maintained" (parsers with maintainers), and a list of languages
             ignore_install = { "comment" }, -- List of parsers to ignore installing
             highlight = {

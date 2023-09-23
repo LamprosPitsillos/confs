@@ -1,8 +1,9 @@
 return {
     { "akinsho/bufferline.nvim",
-         event = "VeryLazy",
+        event = "VeryLazy",
+        enabled= false,
         dependencies = { "nvim-tree/nvim-web-devicons" },
-        lazy = true,
+        lazy = false,
         opts = {
             options = {
                 mode = "buffers", -- set to "tabs" to only show tabpages instead

@@ -213,7 +213,17 @@ return {
         }
     } },
 { "echasnovski/mini.trailspace", version = "*"},
-{ "uga-rosa/ccc.nvim",lazy=false}
+{ "uga-rosa/ccc.nvim",lazy=false},
+{
+  "luckasRanarison/nvim-devdocs",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-telescope/telescope.nvim",
+    "nvim-treesitter/nvim-treesitter",
+  },
+  opts = {}
+}
+
 }
 -- vim.opt.list = true
 -- vim.opt.listchars:append "space:⋅"

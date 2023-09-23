@@ -20,7 +20,3 @@ local builtins = {
 for _, plugin in ipairs(builtins) do
     vim.g["loaded_" .. plugin] = 1
 end
-
--- return {
--- 	{"lewis6991/impatient.nvim",config=true}
--- }
